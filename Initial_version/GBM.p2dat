@@ -1,0 +1,43 @@
+model new
+model title "GBM Simulation"
+; Set the domain extent
+model domain extent -0.25 1.25 -0.25 1.250
+contact cmat default model linearpbond property kn 5e7 dp_nratio 0.5 
+; Generate walls 
+wall generate box 0.00 1.00 0.00 1.00
+; Distribute balls in the box.
+model random 1001
+ball distribute porosity 0.15 radius 0.008000 0.010000 box  0.00 1.00 0.00 1.000
+; Set ball attributes
+ball attribute density 1000.0 damp 0.7
+; Calm the system
+model cycle 1000 calm 10
+; Solve the system to a target limit (here the average force ratio)
+; Use density scaling to quickly reach equilibrium
+model mechanical timestep scale
+model solve ratio-average 1e-3
+model mechanical timestep auto
+model calm
+; delete walls
+wall delete
+; Install parallel bonds to particles in contact 
+; assign very high strength to prevent breakage
+contact method bond gap 0.0
+contact property pb_kn 1e8 pb_ks 1e8 pb_ten 1e12 pb_coh 1e12 pb_fa 30.0 
+; Reset ball displacement 
+ball attribute displacement multiply 0.0 
+; Set linear stiffness to 0.0 and force a reset of linear contact forces. 
+contact property kn 0.0 lin_force 0.0 0.0 
+ball attribute force-contact multiply 0.0 moment-contact multiply 0.0 
+model cycle 1 
+model solve ratio-average 1e-5 
+model save 'intact'
+program call 'GBM_Fracture'
+fracture property ...
+         'sj_kn' 2e9 'sj_ks' 2e9 'sj_fric' 0.70 ...
+         'sj_coh' 0.0 'sj_ten' 0.0 'sj_large' 1
+; Apply smoothjoint contact model to contacts intercepted by fracture
+fracture contact-model model 'smoothjoint' install 
+; Ensure new contacts intersecting the fracture are set to the sj contact model 
+fracture contact-model model 'smoothjoint' activate 
+model save 'GBM'

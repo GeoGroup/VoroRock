@@ -1,0 +1,62 @@
+# -*- coding: mbcs -*-
+from part import *
+from material import *
+from section import *
+from assembly import *
+from step import *
+from interaction import *
+from load import *
+from mesh import *
+from optimization import *
+from job import *
+from sketch import *
+from visualization import *
+from connectorBehavior import *
+mdb.models['Model-1'].rootAssembly.unlock()
+mdb.models['Model-1'].rootAssembly.regenerate()
+mdb.models['Model-1'].Part(name='GBM-failed', objectToCopy=
+    mdb.models['Model-1'].parts['GBM'])
+mdb.models['Model-1'].parts['GBM-failed'].Unlock(reportWarnings=False)
+del mdb.models['Model-1'].parts['GBM']
+mdb.models['Model-1'].parts.changeKey(fromName='GBM-failed', toName='GBM')
+mdb.models['Model-1'].rootAssembly.regenerate()
+mdb.models['Model-1'].parts['GBM'].deleteSets(setNames=('set-1', 'set-2', 
+    'set-3', 'set-4', 'set-5', 'set-6', 'set-7', 'set-8', 'set-9', 'set-10', 
+    'set-11', 'set-12', 'set-13', 'set-14', 'set-15', 'set-16', 'set-17', 
+    'set-18', 'set-19', 'set-20', 'set-21', 'set-22', 'set-23', 'set-24', 
+    'set-25', 'set-26', 'set-27', 'set-28', 'set-29', 'set-30', 'set-31', 
+    'set-32', 'set-33', 'set-34'))
+mdb.models['Model-1'].parts['GBM'].Set(faces=
+    mdb.models['Model-1'].parts['GBM'].faces.getSequenceFromMask(('[#0 #2 ]', 
+    ), ), name='rock')
+mdb.models['Model-1'].parts['GBM'].Set(faces=
+    mdb.models['Model-1'].parts['GBM'].faces.getSequenceFromMask((
+    '[#1000 #2 ]', ), ), name='rock')
+mdb.models['Model-1'].parts['GBM'].sets.changeKey(fromName='rock', toName=
+    'joint')
+mdb.models['Model-1'].parts['GBM'].Set(edges=
+    mdb.models['Model-1'].parts['GBM'].edges.getSequenceFromMask((
+    '[#0 #50000000 #0:2 #ff000000 #fff ]', ), ), faces=
+    mdb.models['Model-1'].parts['GBM'].faces.getSequenceFromMask((
+    '[#ffffefff #1 ]', ), ), name='rock')
+del mdb.models['Model-1'].parts['GBM'].sets['rock']
+del mdb.models['Model-1'].parts['GBM'].sets['joint']
+mdb.models['Model-1'].parts['GBM'].Set(faces=
+    mdb.models['Model-1'].parts['GBM'].faces.getSequenceFromMask((
+    '[#ffffefff #1 ]', ), ), name='rock')
+mdb.models['Model-1'].parts['GBM'].Set(faces=
+    mdb.models['Model-1'].parts['GBM'].faces.getSequenceFromMask((
+    '[#1000 #2 ]', ), ), name='joint')
+mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
+del mdb.models['Model-1'].sketches['__profile__']
+mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
+mdb.models['Model-1'].sketches['__profile__'].rectangle(point1=(-10.0, -10.0), 
+    point2=(10.0, 10.0))
+mdb.models['Model-1'].Part(dimensionality=TWO_D_PLANAR, name='Part-3', type=
+    DEFORMABLE_BODY)
+mdb.models['Model-1'].parts['Part-3'].BaseShell(sketch=
+    mdb.models['Model-1'].sketches['__profile__'])
+del mdb.models['Model-1'].sketches['__profile__']
+mdb.models['Model-1'].parts['Part-3'].Set(faces=
+    mdb.models['Model-1'].parts['Part-3'].faces.getSequenceFromMask(('[#1 ]', 
+    ), ), name='homo')
